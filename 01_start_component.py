@@ -17,23 +17,25 @@ class ChooseRounds:
         round_instructions_text = "Enter the number of rounds you would like to play, " \
                                   "or click the button with the infinity symbol for infinite mode."
         self.round_instructions = Label(self.start_frame, text=round_instructions_text,
-                                        wraplength=300, width=40, justify="left")
+                                        wraplength=275, width=40, justify="left")
         self.round_instructions.grid(row=1)
 
         self.entry_frame = Frame(self.start_frame, padx=10, pady=10)
         self.entry_frame.grid(row=3)
 
-        self.rounds_entry = Entry(self.entry_frame, width=34)
+        self.rounds_entry = Entry(self.entry_frame, width=36)
         self.rounds_entry.grid(row=0, column=0, padx=5)
 
-        self.infinite_button = Button(self.entry_frame, text="∞", width=6,
+        self.infinite_button = Button(self.entry_frame, text="∞", width=4,
+                                      bg="#e8cafc", activebackground="#d4afdb",
                                       command=lambda: self.to_play())
         self.infinite_button.grid(row=0, column=1, padx=5)
 
         self.error_text = Label(self.start_frame, fg="#9e1e1e")
 
         self.confirm_button = Button(self.start_frame, text="Confirm",
-                                     width=15, command=lambda: self.check_rounds())
+                                     width=15, bg="#d6d6d6", activebackground="#a1a1a1",
+                                     command=lambda: self.check_rounds())
         self.confirm_button.grid(row=5, padx=5, pady=5)
 
     # function checks if number of rounds is valid then
