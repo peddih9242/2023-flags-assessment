@@ -28,10 +28,10 @@ class ChooseRounds:
 
         self.infinite_button = Button(self.entry_frame, text="∞", width=4,
                                       bg="#e8cafc", activebackground="#d4afdb",
-                                      command=lambda: self.to_play())
+                                      command=lambda: self.to_play(True))
         self.infinite_button.grid(row=0, column=1, padx=5)
 
-        self.error_text = Label(self.start_frame, fg="#9e1e1e")
+        self.rounds_feedback = Label(self.start_frame)
 
         self.confirm_button = Button(self.start_frame, text="Confirm",
                                      width=15, bg="#d6d6d6", activebackground="#a1a1a1",
@@ -45,31 +45,36 @@ class ChooseRounds:
         num_rounds = self.rounds_entry.get()
         has_error = False
 
-        # try / except block checks for strings, then checks
-        # inputted number is between 0 and 100
+        # try / except makes sure that input is an integer from 1 to 99
         try:
             num_rounds = int(num_rounds)
             if 0 < num_rounds < 100:
                 self.to_play()
             else:
-                if num_rounds <= 0:
-                    error_info = "Number too low, enter above 0"
-                elif num_rounds >= 100:
-                    error_info = "Number too high, enter below 100"
                 has_error = True
 
         except ValueError:
-            error_info = "Please enter an integer between 0 and 100."
+
             has_error = True
 
+        self.rounds_feedback.grid(row=4, padx=5)
+
+        # if an error is found in rounds chosen, show an error in the error_text label
         if has_error:
-            # show error to user
-            self.error_text.grid(row=4, padx=5)
-            self.error_text.config(text=error_info)
+
+            error_info = "Please enter an integer between 0 and 100."
+            self.rounds_feedback.config(text=error_info, fg="#9e1e1e")
+
+        elif not has_error:
+            self.rounds_feedback.config(text="You are OK", fg="#30a608")
 
     # function sends user to play window
     # -- make function when play class is being developed
-    def to_play(self):
+    def to_play(self, infinite_mode=None):
+
+        if infinite_mode:
+            self.rounds_feedback.grid(row=4, padx=5)
+            self.rounds_feedback.config(text="Infinite mode chosen!", fg="#a62da6")
         pass
 
 
