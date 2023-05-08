@@ -11,13 +11,14 @@ class ChooseRounds:
         self.start_frame.grid()
 
         self.flags_title = Label(self.start_frame, text="Flags Quiz",
-                                 font=("Arial", "16", "bold"))
+                                 font=("Microsoft PhagsPa", "16", "bold"))
         self.flags_title.grid(row=0, padx=5, pady=5)
 
         round_instructions_text = "Enter the number of rounds you would like to play, " \
                                   "or click the button with the infinity symbol for infinite mode."
         self.round_instructions = Label(self.start_frame, text=round_instructions_text,
-                                        wraplength=275, width=40, justify="left")
+                                        wraplength=275, width=40, justify="left",
+                                        font=("Microsoft PhagsPa", "10", "normal"))
         self.round_instructions.grid(row=1)
 
         self.entry_frame = Frame(self.start_frame, padx=10, pady=10)
@@ -35,7 +36,8 @@ class ChooseRounds:
 
         self.confirm_button = Button(self.start_frame, text="Confirm",
                                      width=15, bg="#d6d6d6", activebackground="#a1a1a1",
-                                     command=lambda: self.check_rounds())
+                                     command=lambda: self.check_rounds(),
+                                     font=("Microsoft PhagsPa", 10, "normal"))
         self.confirm_button.grid(row=5, padx=5, pady=5)
 
     # function checks if number of rounds is valid then
@@ -75,8 +77,8 @@ class ChooseRounds:
         if infinite_mode:
             self.rounds_feedback.grid(row=4, padx=5)
             self.rounds_feedback.config(text="Infinite mode chosen!", fg="#a62da6")
-        pass
-
+        else:
+            self.rounds_entry.get()
 
 # main routine
 if __name__ == "__main__":
