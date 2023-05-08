@@ -26,16 +26,44 @@ class ChooseRounds:
     # -- make function when play class is being developed
     def to_play(self, infinite_mode=None):
 
-       if infinite_mode:
+        if infinite_mode:
             send_to_play = "infinite"
         else:
             var_num_rounds = self.rounds_entry.get()
             send_to_play = var_num_rounds
-        self.Play(send_to_play)
+        Play(send_to_play)
 
 
-class Play(self, num_rounds):
-    pass
+# play class, window where the user can play the quiz
+class Play:
+
+    def __init__(self, num_rounds):
+
+        self.play_box = Toplevel()
+
+        self.play_frame = Frame(self.play_box)
+        self.play_frame.grid()
+
+        self.rounds_heading = Label(self.play_frame, text="Flag Quiz - Round # out of #",
+                                    font=("Microsoft PhagsPa", 16, "bold"))
+        self.rounds_heading.grid(row=0, padx=5, pady=5)
+
+        quiz_instructions = "Play the game"
+        self.play_instructions = Label(self.play_frame, text=quiz_instructions,
+                                       wraplength=275, justify="left")
+        self.play_instructions.grid(row=1, padx=5, pady=5)
+
+        self.rounds_frame = Frame(self.play_frame)
+        self.rounds_frame.grid(row=2)
+
+        self.flag_image = Entry(self.rounds_frame, width=25)
+        self.flag_image.grid(row=0, column=0)
+
+        self.next_round = Button(self.rounds_frame, text="Next Round",
+                                 width=12)
+        self.next_round.grid(row=0, column=1)
+
+
 
 
 # main routine
