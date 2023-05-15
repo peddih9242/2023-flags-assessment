@@ -1,20 +1,23 @@
-# Import tkinter library
+# import modules
 from tkinter import *
-from PIL import Image, ImageTk
 
-# Create an instance of tkinter frame
-win = Tk()
 
-# Set the geometry
-win.geometry("800x400")
+class ChooseRounds:
 
-# Load the image
-img = Image.open("nzflag.png")
+    def __init__(self):
 
-# Convert To photoimage
-tkimage = ImageTk.PhotoImage(img)
+        self.image = PhotoImage(file="AE-flag.gif").subsample(5)
 
-# Display the Image
-label = Label(win, image=tkimage)
-label.pack()
-win.mainloop()
+        self.entry_frame = Frame(padx=10, pady=10)
+        self.entry_frame.grid()
+
+        self.display_image = Label(self.entry_frame, image=self.image)
+        self.display_image.grid(row=0)
+
+
+# main routine
+if __name__ == "__main__":
+    root = Tk()
+    root.title("Flags Quiz")
+    choose_rounds = ChooseRounds()
+    root.mainloop()
