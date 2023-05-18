@@ -40,6 +40,8 @@ class Play:
     def __init__(self, num_rounds):
 
         self.play_box = Toplevel()
+        if num_rounds == 0:
+            self.play_box.destroy()
 
         self.play_frame = Frame(self.play_box)
         self.play_frame.grid()
@@ -56,14 +58,14 @@ class Play:
         self.rounds_frame = Frame(self.play_frame)
         self.rounds_frame.grid(row=2)
 
-        self.flag_image = Entry(self.rounds_frame, width=25)
-        self.flag_image.grid(row=0, column=0)
+        self.flag_image = PhotoImage(file="nzflag.png").subsample(7)
+
+        self.image_display = Label(self.rounds_frame, image=self.flag_image)
+        self.image_display.grid(row=0, column=0)
 
         self.next_round = Button(self.rounds_frame, text="Next Round",
                                  width=12)
-        self.next_round.grid(row=0, column=1)
-
-
+        self.next_round.grid(row=0, column=1, padx=5)
 
 
 # main routine
@@ -71,4 +73,5 @@ if __name__ == "__main__":
     root = Tk()
     root.title("Flags Quiz")
     ChooseRounds()
+    play = Play(0)
     root.mainloop()
