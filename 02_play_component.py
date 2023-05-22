@@ -31,7 +31,7 @@ class ChooseRounds:
         else:
             var_num_rounds = self.rounds_entry.get()
             send_to_play = var_num_rounds
-        Play(send_to_play)
+        play = Play(send_to_play)
 
 
 # play class, window where the user can play the quiz
@@ -39,12 +39,11 @@ class Play:
 
     def __init__(self, num_rounds):
 
+        # set up play gui
         self.play_box = Toplevel()
-        if num_rounds == 0:
-            self.play_box.destroy()
 
         self.play_frame = Frame(self.play_box)
-        self.play_frame.grid()
+        self.play_frame.grid(padx=10, pady=10)
 
         self.rounds_heading = Label(self.play_frame, text="Flag Quiz - Round # out of #",
                                     font=("Microsoft PhagsPa", 16, "bold"))
@@ -58,20 +57,31 @@ class Play:
         self.rounds_frame = Frame(self.play_frame)
         self.rounds_frame.grid(row=2)
 
-        self.flag_image = PhotoImage(file="nzflag.png").subsample(7)
+        # takes image and displays it
+        flag_image = PhotoImage(file="nzflag.png").subsample(7)
 
-        self.image_display = Label(self.rounds_frame, image=self.flag_image)
+        self.image_display = Label(self.rounds_frame, image=flag_image)
+        self.image_display.flag_image = flag_image
         self.image_display.grid(row=0, column=0)
 
         self.next_round = Button(self.rounds_frame, text="Next Round",
-                                 width=12)
+                                 width=12, height=3)
         self.next_round.grid(row=0, column=1, padx=5)
+
+        self.choice_frame = Frame(self.play_frame, padx=10, pady=10)
+        self.choice_frame.grid(row=3)
+
+        for item in range(4):
+            choice_button = Button(self.choice_frame, text=f"Choice {item + 1}")
+
+            choice_button.grid(row=item // 2,
+                               column=item % 2,
+                               padx=5, pady=5)
 
 
 # main routine
 if __name__ == "__main__":
     root = Tk()
     root.title("Flags Quiz")
-    ChooseRounds()
-    play = Play(0)
+    choose_rounds = ChooseRounds()
     root.mainloop()
