@@ -39,19 +39,20 @@ class Play:
 
     def __init__(self, num_rounds):
 
-        # set up play gui
+        # set up play gui and font for gui
         self.play_box = Toplevel()
+        gui_font = ("Microsoft PhagsPa", 16, "bold")
 
         self.play_frame = Frame(self.play_box)
         self.play_frame.grid(padx=10, pady=10)
 
         self.rounds_heading = Label(self.play_frame, text="Flag Quiz - Round # out of #",
-                                    font=("Microsoft PhagsPa", 16, "bold"))
+                                    font=gui_font)
         self.rounds_heading.grid(row=0, padx=5, pady=5)
 
         quiz_instructions = "Play the game"
         self.play_instructions = Label(self.play_frame, text=quiz_instructions,
-                                       wraplength=275, justify="left")
+                                       wraplength=275, justify="left", font=gui_font)
         self.play_instructions.grid(row=1, padx=5, pady=5)
 
         self.rounds_frame = Frame(self.play_frame)
@@ -65,18 +66,36 @@ class Play:
         self.image_display.grid(row=0, column=0)
 
         self.next_round = Button(self.rounds_frame, text="Next Round",
-                                 width=12, height=3)
+                                 width=12, height=3, font=gui_font)
         self.next_round.grid(row=0, column=1, padx=5)
 
         self.choice_frame = Frame(self.play_frame, padx=10, pady=10)
         self.choice_frame.grid(row=3)
 
         for item in range(4):
-            choice_button = Button(self.choice_frame, text=f"Choice {item + 1}")
+            choice_button = Button(self.choice_frame, text=f"Choice {item + 1}",
+                                   height=2, width=12, font=gui_font)
 
             choice_button.grid(row=item // 2,
                                column=item % 2,
                                padx=5, pady=5)
+
+        result_label_text = "Correct / Incorrect will display here after round ends"
+        self.result_label = Label(self.play_frame, text=result_label_text,
+                                  font=gui_font)
+        self.result_label.grid(row=4)
+
+        self.result_stat = Label(self.play_frame, text="",
+                                 font=gui_font)
+
+        # setup control frame and buttons
+        self.control_frame = Frame(self.play_frame, padx=5, pady=5)
+        self.control_frame.grid()
+
+        for item in range(3):
+
+            self.control_button = Button(self.control_frame, width=8)
+            self.control_button.grid(row=0, column=item)
 
 
 # main routine
