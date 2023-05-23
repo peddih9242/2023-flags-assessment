@@ -18,5 +18,5 @@ if __name__ == "__main__":
     root = Tk()
     root.title("Flags Quiz")
     var_image = PhotoImage(file="AE-flag.gif")
-    choose_rounds = ChooseRounds(var_image)
+    ChooseRounds(var_image)
     root.mainloop()
