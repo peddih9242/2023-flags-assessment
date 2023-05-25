@@ -41,13 +41,14 @@ class Play:
 
         # set up play gui and font for gui
         self.play_box = Toplevel()
-        gui_font = ("Microsoft PhagsPa", 16, "bold")
+        gui_header = ("Microsoft PhagsPa", 16, "bold")
+        gui_font = ("Microsoft PhagsPa", 12, "normal")
 
         self.play_frame = Frame(self.play_box)
         self.play_frame.grid(padx=10, pady=10)
 
         self.rounds_heading = Label(self.play_frame, text="Flag Quiz - Round # out of #",
-                                    font=gui_font)
+                                    font=gui_header)
         self.rounds_heading.grid(row=0, padx=5, pady=5)
 
         quiz_instructions = "Play the game"
@@ -59,7 +60,7 @@ class Play:
         self.rounds_frame.grid(row=2)
 
         # takes image and displays it
-        flag_image = PhotoImage(file="nzflag.png").subsample(7)
+        flag_image = PhotoImage(file="flag_images/PH-flag.gif").subsample(7)
 
         self.image_display = Label(self.rounds_frame, image=flag_image)
         self.image_display.flag_image = flag_image
@@ -74,28 +75,36 @@ class Play:
 
         for item in range(4):
             choice_button = Button(self.choice_frame, text=f"Choice {item + 1}",
-                                   height=2, width=12, font=gui_font)
+                                   height=2, width=14, font=gui_font)
 
             choice_button.grid(row=item // 2,
                                column=item % 2,
                                padx=5, pady=5)
 
-        result_label_text = "Correct / Incorrect will display here after round ends"
+        result_label_text = "Question result will appear here"
         self.result_label = Label(self.play_frame, text=result_label_text,
-                                  font=gui_font)
-        self.result_label.grid(row=4)
+                                  font=gui_font, bg="#d4d4d4", width=30,
+                                  highlightbackground="#c2c2c2",
+                                  highlightthickness=2)
+        self.result_label.grid(row=4, padx=5, pady=5)
 
-        self.result_stat = Label(self.play_frame, text="",
-                                 font=gui_font)
+        result_stat_text = "Correct - 0 \tIncorrect - 0"
+        self.result_stat = Label(self.play_frame, text=result_stat_text,
+                                 font=gui_font, bg="#fff8bf", width=30,
+                                 highlightbackground="#e0daa6",
+                                 highlightthickness=2)
+        self.result_stat.grid(row=5, padx=5, pady=5)
 
         # setup control frame and buttons
         self.control_frame = Frame(self.play_frame, padx=5, pady=5)
         self.control_frame.grid()
 
-        for item in range(3):
+        control_button_details = ["Help", "Statistics", "Start Over"]
 
-            self.control_button = Button(self.control_frame, width=8)
-            self.control_button.grid(row=0, column=item)
+        for item in range(3):
+            self.control_button = Button(self.control_frame, text=control_button_details[item],
+                                         width=11, font=("Microsoft PhagsPa", 10, "normal"))
+            self.control_button.grid(row=0, column=item, padx=5, pady=5)
 
 
 # main routine
