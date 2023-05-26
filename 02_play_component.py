@@ -60,7 +60,7 @@ class Play:
         self.rounds_frame.grid(row=2)
 
         # takes image and displays it
-        flag_image = PhotoImage(file="flag_images/PH-flag.gif").subsample(7)
+        flag_image = PhotoImage(file="flag_images_resized/WS-flag.gif").subsample(5)
 
         self.image_display = Label(self.rounds_frame, image=flag_image)
         self.image_display.flag_image = flag_image
