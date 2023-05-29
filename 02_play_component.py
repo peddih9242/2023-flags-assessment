@@ -31,6 +31,8 @@ class ChooseRounds:
         else:
             var_num_rounds = self.rounds_entry.get()
             send_to_play = var_num_rounds
+
+        self.confirm_button.config(state="disabled")
         play = Play(send_to_play)
 
 
@@ -61,7 +63,7 @@ class Play:
         self.rounds_frame.grid(row=2)
 
         # takes image and displays it
-        flag_image = PhotoImage(file="flag_images_resized/NZ-flag.gif").subsample(5)
+        flag_image = PhotoImage(file="flag_images_resized/CH-flag.gif").subsample(5)
 
         self.image_display = Label(self.rounds_frame, image=flag_image)
         self.image_display.flag_image = flag_image
@@ -73,17 +75,15 @@ class Play:
 
         self.next_round = Button(self.rounds_frame, text="Next Round",
                                  width=14, height=next_rnd_height, font=button_font,
-                                 bg="#7abaff")
+                                 bg="#e1adff")
         self.next_round.grid(row=0, column=1, padx=5)
 
         self.choice_frame = Frame(self.play_frame, padx=10, pady=10)
         self.choice_frame.grid(row=3)
 
-        choice_colors = ["#ff7a7a", "#ffc17a", "#7aff8e", "#d68fff"]
-
         for item in range(4):
             choice_button = Button(self.choice_frame, text=f"Choice {item + 1}",
-                                   height=2, width=14, font=button_font, bg=choice_colors[item])
+                                   height=2, width=14, font=button_font, bg="#b8daff")
 
             choice_button.grid(row=item // 2,
                                column=item % 2,
