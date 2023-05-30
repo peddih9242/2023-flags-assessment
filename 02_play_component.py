@@ -1,5 +1,6 @@
 # import modules
 from tkinter import *
+from functools import partial
 
 
 class ChooseRounds:
@@ -32,7 +33,7 @@ class ChooseRounds:
             var_num_rounds = self.rounds_entry.get()
             send_to_play = var_num_rounds
 
-        self.confirm_button.config(state="disabled")
+        root.withdraw()
         play = Play(send_to_play)
 
 
@@ -43,6 +44,11 @@ class Play:
 
         # set up play gui and font for gui
         self.play_box = Toplevel()
+
+        # if users press cross at top, closes help and
+        # 'releases' help button
+        self.play_box.protocol("WM_DELETE_WINDOW", partial(self.close_play))
+
         gui_header = ("Microsoft PhagsPa", 16, "bold")
         button_font = ("Microsoft PhagsPa", 12, "normal")
         text_font = ("Microsoft PhagsPa", 10, "normal")
@@ -108,16 +114,43 @@ class Play:
         self.control_frame.grid()
 
         control_button_details = [
-            ["Help", "#f7dd8f"],
-            ["Statistics", "#8c91ed"],
-            ["Start Over", "#d4d4d4"]
+            ["Help", "#f7dd8f", "get help"],
+            ["Statistics", "#8c91ed", "get stats"],
+            ["Start Over", "#d4d4d4", "start over"]
         ]
 
         for item in range(3):
             self.control_button = Button(self.control_frame, text=control_button_details[item][0],
                                          width=11, font=text_font,
-                                         bg=control_button_details[item][1])
+                                         bg=control_button_details[item][1],
+                                         command=lambda i=item: self.to_do(control_button_details[i][2]))
             self.control_button.grid(row=0, column=item, padx=5, pady=5)
+
+    # function links buttons to designated function
+    def to_do(self, request):
+
+        if request == "get help":
+            self.get_help()
+
+        elif request == "get stats":
+            self.get_stats()
+
+        elif request == "start over":
+            self.close_play()
+
+    # function closes play window and shows rounds entry window
+    def close_play(self):
+        # reshow root (choose round) and destroy current box
+        # to allow new game to start
+        root.deiconify()
+        self.play_box.destroy()
+
+    # function to open help window when developed
+    def get_help(self):
+        print("You chose to get help")
+
+    def get_stats(self):
+        print("You chose to get stats")
 
 
 # main routine
