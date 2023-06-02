@@ -18,6 +18,8 @@ class Play:
         chosen_directory = f"flag_images_resized/{chosen_flag_list[3]}"
         print(chosen_flag_list)
 
+        self.get_choices(all_flags, chosen_flag_list)
+
         # takes image and displays it
         flag_image = PhotoImage(file=chosen_directory).subsample(5)
 
@@ -46,8 +48,23 @@ class Play:
         chosen_flag_list = flag_list[flag_index]
         return chosen_flag_list
 
+    def get_choices(self, flag_list, correct_flag_list):
 
-# main routine
+        chosen_flag_index = []
+        count = 1
+
+        while count < 4:
+
+            flag_index = random.randint(1, 198)
+            if flag_index in chosen_flag_index:
+                continue
+            chosen_flag_index.append(flag_index)
+            count += 1
+
+        for item in chosen_flag_index:
+            chosen_flag_list = flag_list[item]
+
+
 # main routine
 if __name__ == "__main__":
     root = Tk()
