@@ -27,6 +27,7 @@ class Play:
         self.image_display.flag_image = flag_image
         self.image_display.grid(row=0, column=0, padx=10, pady=5)
 
+    # function returns list of all flag data
     def get_all_flags(self):
         # open csv file and create reader
         csv_file = open("country_flags.csv")
@@ -42,27 +43,37 @@ class Play:
 
         return flag_data
 
+    # function returns a random flag from flag list
     def random_flag(self, flag_list):
 
-        flag_index = random.randint(1, 198)
-        chosen_flag_list = flag_list[flag_index]
-        return chosen_flag_list
+        # get the flag that will be the correct flag this round
+        correct_flag_index = random.randint(1, 198)
 
-    def get_choices(self, flag_list, correct_flag_list):
+        correct_flag_list = flag_list[correct_flag_index]
 
-        chosen_flag_index = []
+        choice_flag_index = []
+
+        choice_flag_files = [correct_flag_list[3]]
+        choice_flag_names = [correct_flag_list[0]]
+
         count = 1
 
         while count < 4:
 
             flag_index = random.randint(1, 198)
-            if flag_index in chosen_flag_index:
+            if flag_index in choice_flag_index or flag_index == correct_flag_index:
                 continue
-            chosen_flag_index.append(flag_index)
+            choice_flag_index.append(flag_index)
             count += 1
 
-        for item in chosen_flag_index:
-            chosen_flag_list = flag_list[item]
+        for item in choice_flag_index:
+            choice_flag_names.append(flag_list[item][0])
+            choice_flag_files.append(flag_list[item][3])
+
+        print(choice_flag_names)
+        print(choice_flag_files)
+
+        return [choice_flag_names, choice_flag_files]
 
 
 # main routine
