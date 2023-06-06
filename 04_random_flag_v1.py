@@ -14,11 +14,12 @@ class Play:
 
         all_flags = self.get_all_flags()
 
-        chosen_flag_list = self.random_flag(all_flags)
-        chosen_directory = f"flag_images_resized/{chosen_flag_list[3]}"
-        print(chosen_flag_list)
+        chosen_flag_info = self.random_flag(all_flags)
 
-        self.get_choices(all_flags, chosen_flag_list)
+        chosen_flag_names = chosen_flag_info[0]
+        chosen_flag_file = chosen_flag_info[1]
+
+        chosen_directory = f"flag_images_resized/{chosen_flag_file}"
 
         # takes image and displays it
         flag_image = PhotoImage(file=chosen_directory).subsample(5)
@@ -26,6 +27,17 @@ class Play:
         self.image_display = Label(self.play_frame, image=flag_image)
         self.image_display.flag_image = flag_image
         self.image_display.grid(row=0, column=0, padx=10, pady=5)
+
+        self.choice_frame = Frame(self.play_frame, padx=10, pady=10)
+        self.choice_frame.grid(row=1)
+
+        for item in range(4):
+            choice_button = Button(self.choice_frame, text=chosen_flag_names[item],
+                                   height=2, width=14, bg="#b8daff", wraplength=100)
+
+            choice_button.grid(row=item // 2,
+                               column=item % 2,
+                               padx=5, pady=5)
 
     # function returns list of all flag data
     def get_all_flags(self):
@@ -47,13 +59,13 @@ class Play:
     def random_flag(self, flag_list):
 
         # get the flag that will be the correct flag this round
-        correct_flag_index = random.randint(1, 198)
+        correct_flag_index = random.randint(1, 197)
 
         correct_flag_list = flag_list[correct_flag_index]
+        correct_flag_file = correct_flag_list[3]
 
         choice_flag_index = []
 
-        choice_flag_files = [correct_flag_list[3]]
         choice_flag_names = [correct_flag_list[0]]
 
         count = 1
@@ -68,12 +80,11 @@ class Play:
 
         for item in choice_flag_index:
             choice_flag_names.append(flag_list[item][0])
-            choice_flag_files.append(flag_list[item][3])
 
         print(choice_flag_names)
-        print(choice_flag_files)
+        print(correct_flag_file)
 
-        return [choice_flag_names, choice_flag_files]
+        return [choice_flag_names, correct_flag_file]
 
 
 # main routine
