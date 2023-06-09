@@ -8,7 +8,7 @@ class Play:
 
     def __init__(self):
 
-        # set up
+        # set up gui
         self.play_frame = Frame()
         self.play_frame.grid(padx=10, pady=10)
 
@@ -18,12 +18,6 @@ class Play:
 
         chosen_flag_names = chosen_flag_info[0]
         chosen_flag_file = chosen_flag_info[1]
-
-        # add link for names and files
-        chosen_flag_file.append(0)
-
-        for item in range(1, 4):
-            chosen_flag_names.append(item)
 
         chosen_directory = f"flag_images_resized/{chosen_flag_file}"
 
@@ -67,27 +61,25 @@ class Play:
     def random_flag(self, flag_list):
 
         # get the flag that will be the correct flag this round
-        correct_flag_index = random.randint(1, 197)
+        correct_flag_list = random.choice(flag_list)
 
-        correct_flag_list = flag_list[correct_flag_index]
         correct_flag_file = correct_flag_list[3]
 
-        choice_flag_index = []
-
+        chosen_flag_lists = []
         choice_flag_names = [correct_flag_list[0]]
 
         count = 1
 
         while count < 4:
 
-            flag_index = random.randint(1, 198)
-            if flag_index in choice_flag_index or flag_index == correct_flag_index:
+            chosen_flag = random.choice(flag_list)
+            if chosen_flag in chosen_flag_lists:
                 continue
-            choice_flag_index.append(flag_index)
+            chosen_flag_lists.append(chosen_flag)
             count += 1
 
-        for item in choice_flag_index:
-            choice_flag_names.append(flag_list[item][0])
+        for item in chosen_flag_lists:
+            choice_flag_names.append(item[0])
 
         print(choice_flag_names)
         print(correct_flag_file)
