@@ -69,11 +69,14 @@ class Play:
         self.rounds_frame = Frame(self.play_frame)
         self.rounds_frame.grid(row=2)
 
-        # get properties of random flag and display it
+        # get properties of multiple random flag and display
+        # the flag that will be correct
         all_flags = self.get_all_flags()
 
-        chosen_flag_list = self.random_flag(all_flags)
-        chosen_directory = f"flag_images_resized/{chosen_flag_list[3]}"
+        randomised_flags = self.random_flag(all_flags)
+
+        correct_flag_file = randomised_flags[1]
+        chosen_directory = f"flag_images_resized/{correct_flag_file}"
 
         flag_image = PhotoImage(file=chosen_directory).subsample(5)
 
@@ -93,9 +96,18 @@ class Play:
         self.choice_frame = Frame(self.play_frame, padx=10, pady=10)
         self.choice_frame.grid(row=3)
 
+        # get four choices for buttons (one should be the correct choice)
+        choice_names = randomised_flags[1]
+
+        # create a link between the correct flag and correct button
+        correct_flag_list = [correct_flag_file, choice_names[0]]
+        print(randomised_flags)
+        print(correct_flag_list)
+
         for item in range(4):
-            choice_button = Button(self.choice_frame, text=f"Choice {item + 1}",
-                                   height=2, width=14, font=button_font, bg="#b8daff")
+            choice_button = Button(self.choice_frame, text=choice_names[item],
+                                   height=2, width=14, font=button_font, bg="#b8daff",
+                                   wraplength=300)
 
             choice_button.grid(row=item // 2,
                                column=item % 2,
@@ -173,11 +185,34 @@ class Play:
 
         return flag_data
 
+    # function returns a random flag from flag list
     def random_flag(self, flag_list):
 
-        flag_index = random.randint(1, 198)
-        chosen_flag_list = flag_list[flag_index]
-        return chosen_flag_list
+        # get the flag that will be the correct flag this round
+        correct_flag_list = random.choice(flag_list)
+
+        correct_flag_file = correct_flag_list[3]
+
+        chosen_flag_lists = []
+        choice_flag_names = [correct_flag_list[0]]
+
+        count = 1
+
+        while count < 4:
+
+            chosen_flag = random.choice(flag_list)
+            if chosen_flag in chosen_flag_lists:
+                continue
+            chosen_flag_lists.append(chosen_flag)
+            count += 1
+
+        for item in chosen_flag_lists:
+            choice_flag_names.append(item[0])
+
+        print(choice_flag_names)
+        print(correct_flag_file)
+
+        return [choice_flag_names, correct_flag_file]
 
 
 # main routine

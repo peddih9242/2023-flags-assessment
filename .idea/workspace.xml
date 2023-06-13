@@ -36,7 +36,7 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
 }</component>
-  <component name="RunManager" selected="Python.04_random_flag_v2">
+  <component name="RunManager" selected="Python.02_play_component_v2">
     <configuration name="02_play_component_v2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="2023-flags-assessment" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -165,10 +165,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.02_play_component_v2" />
         <item itemvalue="Python.04_random_flag_v2" />
         <item itemvalue="Python.04_random_flag_v1" />
         <item itemvalue="Python.3" />
-        <item itemvalue="Python.02_play_component_v2" />
         <item itemvalue="Python.04_random_flag" />
       </list>
     </recent_temporary>
