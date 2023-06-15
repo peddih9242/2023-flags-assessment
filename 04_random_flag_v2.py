@@ -19,6 +19,8 @@ class Play:
         chosen_flag_names = chosen_flag_info[0]
         chosen_flag_file = chosen_flag_info[1]
 
+        random.shuffle(chosen_flag_names)
+
         chosen_directory = f"flag_images_resized/{chosen_flag_file}"
 
         # takes image and displays it

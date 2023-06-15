@@ -97,17 +97,18 @@ class Play:
         self.choice_frame.grid(row=3)
 
         # get four choices for buttons (one should be the correct choice)
-        choice_names = randomised_flags[1]
+        choice_names = randomised_flags[0]
 
         # create a link between the correct flag and correct button
         correct_flag_list = [correct_flag_file, choice_names[0]]
-        print(randomised_flags)
-        print(correct_flag_list)
+
+        # randomise choice names for random button positions
+        random.shuffle(choice_names)
 
         for item in range(4):
             choice_button = Button(self.choice_frame, text=choice_names[item],
-                                   height=2, width=14, font=button_font, bg="#b8daff",
-                                   wraplength=300)
+                                   height=3, width=14, font=button_font, bg="#b8daff",
+                                   wraplength=100)
 
             choice_button.grid(row=item // 2,
                                column=item % 2,
@@ -208,9 +209,6 @@ class Play:
 
         for item in chosen_flag_lists:
             choice_flag_names.append(item[0])
-
-        print(choice_flag_names)
-        print(correct_flag_file)
 
         return [choice_flag_names, correct_flag_file]
 
