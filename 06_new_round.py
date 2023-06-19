@@ -1,6 +1,35 @@
 from tkinter import *
 import csv
 import random
+from functools import partial
+
+
+class ChooseRounds:
+
+    def __init__(self):
+
+        self.entry_frame = Frame(padx=10, pady=10)
+        self.entry_frame.grid(row=3)
+
+        self.rounds_entry = Entry(self.entry_frame, width=36)
+        self.rounds_entry.grid(row=0, column=0, padx=5)
+
+        self.infinite_button = Button(self.entry_frame, text="∞", width=4,
+                                      bg="#e8cafc", activebackground="#d4afdb",
+                                      command=lambda: self.to_play(True))
+        self.infinite_button.grid(row=0, column=1, padx=5)
+
+        self.confirm_button = Button(self.entry_frame, text="Confirm",
+                                     width=15, bg="#d6d6d6", activebackground="#a1a1a1",
+                                     command=lambda: self.to_play())
+        self.confirm_button.grid(row=5, padx=5, pady=5)
+
+    # function sends user to play window
+    # -- make function when play class is being developed
+    def to_play(self):
+
+        root.withdraw()
+        play = Play()
 
 
 # play class, window where the user can play the quiz
@@ -8,12 +37,21 @@ class Play:
 
     def __init__(self):
 
+        # set up play gui and font for gui
+        self.play_box = Toplevel()
+
+        # if users press cross at top, closes help and
+        # 'releases' help button
+        self.play_box.protocol("WM_DELETE_WINDOW", partial(self.close_play))
+
         # set up gui
-        self.play_frame = Frame()
+        self.play_frame = Frame(self.play_box)
         self.play_frame.grid(padx=10, pady=10)
 
         self.current_round = 1
-        self.rounds_heading = Label(self.play_frame, text=f"Flag Quiz - Round {self.current_round} out of 5",
+        self.num_rounds = 5
+
+        self.rounds_heading = Label(self.play_frame, text=f"Flag Quiz - Round {self.current_round} out of {self.num_rounds}",
                                     font=("Microsoft PhagsPa", 16, "bold"))
         self.rounds_heading.grid(row=0, padx=5, pady=5)
 
@@ -45,7 +83,8 @@ class Play:
 
         self.next_round = Button(self.rounds_frame, text="Next Round",
                                  width=14, height=next_rnd_height,
-                                 bg="#e1adff", command=lambda: self.new_round(all_flags))
+                                 bg="#e1adff", command=lambda: self.new_round(all_flags),
+                                 state=DISABLED)
         self.next_round.grid(row=0, column=1, padx=5)
 
         self.choice_frame = Frame(self.play_frame, padx=10, pady=10)
@@ -82,6 +121,28 @@ class Play:
                                  highlightbackground="#e0daa6",
                                  highlightthickness=2)
         self.result_stat.grid(row=4, padx=5, pady=5)
+
+        # setup control frame and buttons
+        self.control_frame = Frame(self.play_frame, padx=5, pady=5)
+        self.control_frame.grid()
+
+        control_button_details = [
+            ["Help", "#f7dd8f", "get help"],
+            ["Statistics", "#8c91ed", "get stats"],
+            ["Start Over", "#d4d4d4", "start over"]
+        ]
+
+        control_buttons = []
+
+        for item in range(3):
+            self.control_button = Button(self.control_frame, text=control_button_details[item][0],
+                                         width=11, bg=control_button_details[item][1],
+                                         command=lambda i=item: self.to_do(control_button_details[i][2]))
+            self.control_button.grid(row=0, column=item, padx=5, pady=5)
+
+            control_buttons.append(self.control_button)
+
+        self.start_over = control_buttons[2]
 
     # function returns list of all flag data
     def get_all_flags(self):
@@ -127,6 +188,15 @@ class Play:
 
     def choice_compare(self, choice_name, correct_list):
 
+        # enable next round button
+        self.next_round.config(state=NORMAL)
+
+        # end game if the last round had just been played
+        if self.current_round == self.num_rounds:
+
+            self.next_round.config(state=DISABLED)
+            self.start_over.config(bg="#48bf15", text="Play Again", font=("Arial", 10, "bold"))
+
         # disable choice buttons
         for item in self.choice_button_list:
 
@@ -157,12 +227,15 @@ class Play:
 
     def new_round(self, flag_list):
 
+        # update rounds heading
         self.current_round += 1
-        self.rounds_heading.config(text=f"Flag Quiz - Round {self.current_round} out of 5")
+        self.rounds_heading.config(text=f"Flag Quiz - Round {self.current_round} out of {self.num_rounds}")
 
-        # re-enable choice buttons
+        # re-enable choice buttons and disable next round button
         for item in self.choice_button_list:
             item.config(state=NORMAL)
+
+        self.next_round.config(state=DISABLED)
 
         chosen_flag_info = self.random_flag(flag_list)
 
@@ -195,10 +268,36 @@ class Play:
 
             choice_config_count += 1
 
+    # function links buttons to designated function
+    def to_do(self, request):
+
+        if request == "get help":
+            self.get_help()
+
+        elif request == "get stats":
+            self.get_stats()
+
+        elif request == "start over":
+            self.close_play()
+
+    # function closes play window and shows rounds entry window
+    def close_play(self):
+        # reshow root (choose round) and destroy current box
+        # to allow new game to start
+        root.deiconify()
+        self.play_box.destroy()
+
+    # function to open help window when developed
+    def get_help(self):
+        print("You chose to get help")
+
+    def get_stats(self):
+        print("You chose to get stats")
+
 
 # main routine
 if __name__ == "__main__":
     root = Tk()
     root.title("Flags Quiz")
-    play = Play()
+    choose_rounds = ChooseRounds()
     root.mainloop()
