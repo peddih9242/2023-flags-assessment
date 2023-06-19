@@ -100,7 +100,7 @@ class Play:
         choice_names = randomised_flags[0]
 
         # create a link between the correct flag and correct button
-        correct_flag_list = [correct_flag_file, choice_names[0]]
+        correct_flag_list = [choice_names[0], correct_flag_file]
 
         # randomise choice names for random button positions
         random.shuffle(choice_names)
