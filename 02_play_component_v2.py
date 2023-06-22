@@ -25,7 +25,6 @@ class ChooseRounds:
         self.confirm_button.grid(row=5, padx=5, pady=5)
 
     # function sends user to play window
-    # -- make function when play class is being developed
     def to_play(self, infinite_mode=None):
 
         if infinite_mode:
@@ -188,7 +187,6 @@ class Play:
 
     # function returns a random flag from flag list
     def random_flag(self, flag_list):
-
         # get the flag that will be the correct flag this round
         correct_flag_list = random.choice(flag_list)
 
@@ -202,7 +200,7 @@ class Play:
         while count < 4:
 
             chosen_flag = random.choice(flag_list)
-            if chosen_flag in chosen_flag_lists:
+            if chosen_flag in chosen_flag_lists or chosen_flag == correct_flag_list:
                 continue
             chosen_flag_lists.append(chosen_flag)
             count += 1
