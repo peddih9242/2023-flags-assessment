@@ -102,10 +102,18 @@ class Play:
         self.play_frame = Frame(self.play_box)
         self.play_frame.grid(padx=10, pady=10)
 
-        self.num_rounds = num_rounds
         self.current_round = 1
 
-        self.rounds_heading = Label(self.play_frame, text=f"Flag Quiz - Round {self.current_round} out of {self.num_rounds}",
+        # initiate round variable for rounds heading
+        if num_rounds == "infinite":
+            self.num_rounds = "infinite"
+            heading_text = "Infinite Mode"
+
+        else:
+            self.num_rounds = int(num_rounds)
+            heading_text = f"Round {self.current_round} out of {self.num_rounds}"
+
+        self.rounds_heading = Label(self.play_frame, text=f"Flag Quiz - {heading_text}",
                                     font=("Microsoft PhagsPa", 16, "bold"))
         self.rounds_heading.grid(row=0, padx=5, pady=5)
 
@@ -244,8 +252,8 @@ class Play:
         # enable next round button
         self.next_round.config(state=NORMAL)
 
-        # end game if the last round had just been played
-        if self.current_round == self.num_rounds:
+        # end game if the last game has been played (if infinite mode was not chosen)
+        if self.current_round == self.num_rounds and self.num_rounds != "infinite":
 
             self.next_round.config(state=DISABLED)
             self.start_over.config(bg="#48bf15", text="Play Again", font=("Arial", 10, "bold"))
@@ -280,9 +288,14 @@ class Play:
 
     def new_round(self, flag_list):
 
-        # update rounds heading
+        # update rounds heading and question result text and styling
         self.current_round += 1
-        self.rounds_heading.config(text=f"Flag Quiz - Round {self.current_round} out of {self.num_rounds}")
+        if self.num_rounds == "infinite":
+            self.rounds_heading.config(text=f"Flag Quiz - Round {self.current_round}")
+        else:
+            self.rounds_heading.config(text=f"Flag Quiz - Round {self.current_round} out of {self.num_rounds}")
+        self.result_label.config(bg="#d4d4d4", highlightbackground="#c2c2c2",
+                                 text="Question result will appear here")
 
         # re-enable choice buttons and disable next round button
         for item in self.choice_button_list:
