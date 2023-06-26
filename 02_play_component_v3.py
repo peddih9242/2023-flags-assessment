@@ -277,6 +277,8 @@ class Play:
         for item in self.choice_button_list:
             item.config(state=DISABLED, bg="#ed8979")
 
+        self.correct_button.config(bg="#84e37b")
+
         correct_answer = correct_list[0]
 
         # update result label, choice buttons and correct / incorrect rounds based on result
@@ -284,15 +286,13 @@ class Play:
             self.result_label.config(text=f"Correct! The answer was {correct_answer}.",
                                      bg="#84e37b", highlightbackground="#3cb031")
             self.correct_rounds += 1
-            for item in self.choice_button_list:
-                item.config(bg="#84e37b")
+
 
         else:
             self.result_label.config(text=f"Incorrect! The answer was {correct_answer}.",
                                      bg="#ed8979", highlightbackground="#c9432e")
             self.incorrect_rounds += 1
-            for item in self.choice_button_list:
-                item.config(bg="#ed8979")
+
 
         self.result_stat.config(text=f"Correct: {self.correct_rounds} Incorrect: {self.incorrect_rounds}")
 
@@ -353,7 +353,7 @@ class Play:
         choice_config_count = 0
         for item in self.choice_button_list:
             item.config(text=chosen_flag_names[choice_config_count],
-                        command=lambda i=chosen_flag_names[choice_config_count]: self.choice_compare(i, correct_flag_list))
+                        command=lambda i=chosen_flag_names[choice_config_count]: self.choice_compare(i,                                                                                   correct_flag_list))
 
             choice_config_count += 1
 
