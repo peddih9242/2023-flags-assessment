@@ -117,10 +117,15 @@ class Play:
                                     font=("Microsoft PhagsPa", 16, "bold"))
         self.rounds_heading.grid(row=0, padx=5, pady=5)
 
+        quiz_instructions = "Click the button with the name of the flag shown!"
+        self.play_instructions = Label(self.play_frame, text=quiz_instructions,
+                                       wraplength=275, justify="left")
+        self.play_instructions.grid(row=1, padx=5, pady=5)
+
         all_flags = self.get_all_flags()
 
         self.rounds_frame = Frame(self.play_frame)
-        self.rounds_frame.grid(row=1)
+        self.rounds_frame.grid(row=2)
 
         chosen_flag_info = self.random_flag(all_flags)
 
@@ -150,7 +155,7 @@ class Play:
         self.next_round.grid(row=0, column=1, padx=5)
 
         self.choice_frame = Frame(self.play_frame, padx=10, pady=10)
-        self.choice_frame.grid(row=2)
+        self.choice_frame.grid(row=3)
 
         random.shuffle(chosen_flag_names)
 
@@ -172,7 +177,7 @@ class Play:
                                   bg="#d4d4d4", width=30,
                                   highlightbackground="#c2c2c2",
                                   highlightthickness=2, wraplength=200)
-        self.result_label.grid(row=3, padx=5, pady=5)
+        self.result_label.grid(row=4, padx=5, pady=5)
 
         self.correct_rounds = 0
         self.incorrect_rounds = 0
@@ -182,7 +187,7 @@ class Play:
                                  bg="#fff8bf", width=30,
                                  highlightbackground="#e0daa6",
                                  highlightthickness=2)
-        self.result_stat.grid(row=4, padx=5, pady=5)
+        self.result_stat.grid(row=5, padx=5, pady=5)
 
         # setup control frame and buttons
         self.control_frame = Frame(self.play_frame, padx=5, pady=5)

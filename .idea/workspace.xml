@@ -36,8 +36,8 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
 }</component>
-  <component name="RunManager" selected="Python.06_rounds_v1">
-    <configuration name="01_Base_Component_v2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.02_play_component_v2">
+    <configuration name="02_play_component_v2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="2023-flags-assessment" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -45,11 +45,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../2023-colour-game" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../2023-colour-game/01_Base_Component_v2.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/02_play_component_v2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -165,11 +165,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.06_rounds_v1" />
+        <item itemvalue="Python.02_play_component_v2" />
         <item itemvalue="Python.06_rounds_v2" />
+        <item itemvalue="Python.06_rounds_v1" />
         <item itemvalue="Python.06_new_round" />
         <item itemvalue="Python.3" />
-        <item itemvalue="Python.01_Base_Component_v2" />
       </list>
     </recent_temporary>
   </component>
