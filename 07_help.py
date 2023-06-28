@@ -72,9 +72,18 @@ class Help:
                                 font=("Microsoft PhagsPa", "16", "bold"), bg="#ffe387")
         self.help_title.grid(row=0, padx=5, pady=5)
 
-        instructions_text = "After choosing your number of rounds, "
+        instructions_text = "Welcome to the help window! Currently you should have chosen the number of rounds, which you will play " \
+                            "that number of rounds.\n\nWhen you're playing the game you will be shown a flag that represents a country. " \
+                            "To win you must choose (by clicking) the button which has the name of the country that the flag represents. " \
+                            "After choosing which country you think the flag is from you will be able to play more rounds (if there are more rounds to be played)" \
+                            "by clicking the 'next round button', which will bring you to the next round." \
+                            "You will also be able to check your current game history by clicking on the 'Statistics' button at the bottom of the" \
+                            "play window\n\n" \
+                            "Want to play more after? Click the 'start over' (or 'play again button if you have completed your game') or the X at the top right of the window " \
+                            "to go back to choose the number of rounds you want to play, and start again from the beginning!"
+
         self.instructions = Label(self.help_frame, text=instructions_text,
-                                  wraplength=275, width=40, justify="left", bg="#ffe387",
+                                  wraplength=330, width=50, justify="left", bg="#ffe387",
                                   font=("Microsoft PhagsPa", "10", "normal"))
         self.instructions.grid(row=1)
 
@@ -82,7 +91,7 @@ class Help:
                                    width=15, bg="#e0af46", activebackground="#f0c362",
                                    command=lambda: self.close_help(partner),
                                    font=("Microsoft PhagsPa", 10, "normal"))
-        self.dismiss_help.grid(row=2, padx=5, pady=5)
+        self.dismiss_help.grid(row=2, padx=5, pady=10)
 
     # function sends user to play window
     def close_help(self, partner):

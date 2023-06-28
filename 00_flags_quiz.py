@@ -18,8 +18,8 @@ class ChooseRounds:
                                  font=("Microsoft PhagsPa", "16", "bold"))
         self.flags_title.grid(row=0, padx=5, pady=5)
 
-        round_instructions_text = "Enter the number of rounds you would like to play, " \
-                                  "or click the button with the infinity symbol for infinite mode."
+        round_instructions_text = "Welcome to the flags quiz! Please enter the number of rounds you would like to play, " \
+                                  "or click the button with the infinity symbol to play infinite rounds."
         self.round_instructions = Label(self.start_frame, text=round_instructions_text,
                                         wraplength=275, width=40, justify="left",
                                         font=("Microsoft PhagsPa", "10", "normal"))
@@ -130,6 +130,7 @@ class Play:
         self.rounds_frame.grid(row=2)
 
         all_flags = self.get_all_flags()
+        self.duplicate_files = [""]
 
         chosen_flag_info = self.random_flag(all_flags)
 
@@ -242,10 +243,19 @@ class Play:
 
     # function returns a random flag from flag list
     def random_flag(self, flag_list):
-        # get the flag that will be the correct flag this round
-        correct_flag_list = random.choice(flag_list)
 
-        correct_flag_file = correct_flag_list[3]
+        # get the flag that will be the correct flag this round
+        # and make sure the file will not be the same two rounds in a row
+        while True:
+            correct_flag_list = random.choice(flag_list)
+
+            correct_flag_file = correct_flag_list[3]
+            if correct_flag_file in self.duplicate_files:
+                continue
+            else:
+                self.duplicate_files.pop(0)
+                self.duplicate_files.append(correct_flag_file)
+                break
 
         chosen_flag_lists = []
         choice_flag_names = [correct_flag_list[0]]
@@ -411,23 +421,31 @@ class Help:
                                 font=("Microsoft PhagsPa", "16", "bold"), bg="#ffe387")
         self.help_title.grid(row=0, padx=5, pady=5)
 
-        instructions_text = "Enter the number of rounds you would like to play, " \
-                            "or click the button with the infinity symbol for infinite mode."
+        # instructions to be displayed in help
+        instructions_text = "Welcome to the help window! Currently you should have chosen the number of rounds, which you will play " \
+                            "that number of rounds.\n\nWhen you're playing the game you will be shown a flag that represents a country. " \
+                            "To win you must choose (by clicking) the button which has the name of the country that the flag represents. " \
+                            "After choosing which country you think the flag is from you will be able to play more rounds (if there are more rounds to be played)" \
+                            "by clicking the 'next round button', which will bring you to the next round." \
+                            "You will also be able to check your current game history by clicking on the 'Statistics' button at the bottom of the" \
+                            "play window\n\n" \
+                            "Want to play more after? Click the 'start over' (or 'play again button if you have completed your game') or the X at the top right of the window " \
+                            "to go back to choose the number of rounds you want to play, and start again from the beginning!"
+
         self.instructions = Label(self.help_frame, text=instructions_text,
-                                  wraplength=275, width=35, justify="left", bg="#ffe387",
+                                  wraplength=400, width=50, justify="left", bg="#ffe387",
                                   font=("Microsoft PhagsPa", "12", "normal"))
         self.instructions.grid(row=1)
 
         self.dismiss_help = Button(self.help_frame, text="Dismiss",
                                    width=15, bg="#e0af46", activebackground="#f0c362",
                                    command=lambda: self.close_help(partner),
-                                   font=("Microsoft PhagsPa", 10, "normal"))
-        self.dismiss_help.grid(row=2, padx=5, pady=5)
+                                   font=("Microsoft PhagsPa", "10", "normal"))
+        self.dismiss_help.grid(row=2, padx=5, pady=10)
 
-    # function sends user to play window
+    # function closes the help window and enables help button
     def close_help(self, partner):
 
-        # enable help button and close help window
         partner.help_button.config(state=NORMAL)
         self.help_box.destroy()
 
