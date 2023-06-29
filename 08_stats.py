@@ -388,69 +388,119 @@ class Stats:
         self.stats_box.protocol("WM_DELETE_WINDOW", partial(self.close_stats,
                                                            partner))
 
-        print(history)
-
         # create GUI
-        self.stats_frame = Frame(self.stats_box, padx=10, pady=10, bg="#ffe387")
+        self.stats_frame = Frame(self.stats_box, padx=10, pady=10, bg="#a2d0fa")
         self.stats_frame.grid()
 
-        self.help_title = Label(self.stats_frame, text="Statistics / History",
-                                font=("Microsoft PhagsPa", "16", "bold"), bg="#ffe387")
-        self.help_title.grid(row=0, padx=5, pady=5)
+        self.stats_title = Label(self.stats_frame, text="Statistics / History",
+                                font=("Microsoft PhagsPa", "16", "bold"), bg="#a2d0fa")
+        self.stats_title.grid(row=0, padx=5, pady=5)
 
         instructions_text = "Welcome to the statistics window! Here you can see your correct rounds " \
                             "and incorrect rounds with a percentage. You can also see your question history here, " \
                             "using the arrow buttons to navigate through groups of five rounds."\
 
         self.instructions = Label(self.stats_frame, text=instructions_text,
-                                  wraplength=330, width=50, justify="left", bg="#ffe387",
+                                  wraplength=450, width=70, justify="left", bg="#a2d0fa",
                                   font=("Microsoft PhagsPa", "10", "normal"))
         self.instructions.grid(row=1, padx=5, pady=5)
 
         total_correct = result_ratio[0]
         total_incorrect = result_ratio[1]
 
-        self.total_results = Label(self.stats_frame, text=f"Correct: {total_correct} \tIncorrect: {total_incorrect}",
+        self.total_results = Label(self.stats_frame, text=f"Correct: {total_correct} \t\tIncorrect: {total_incorrect}",
                                    width=50)
         self.total_results.grid(row=2, padx=5, pady=5)
 
+        # calculate percentages of correct and incorrect rounds and display them
         percentage_correct = round((total_correct / (total_correct + total_incorrect)) * 100, 1)
-        percentage_incorrect = round((total_incorrect / (total_correct + total_incorrect)) * 100, 1)
+        percentage_incorrect = round(100 - percentage_correct)
 
-        self.result_percentages = Label(self.stats_frame, text=f"Percentage Correct: {percentage_correct}% \tPercentage Incorrect: {percentage_incorrect}%",
+        self.result_percentages = Label(self.stats_frame, text=f"Percentage Correct: {percentage_correct}% \t\tPercentage Incorrect: {percentage_incorrect}%",
                                         width=50)
         self.result_percentages.grid(row=3, padx=5, pady=5)
 
-        shown_rounds_text = "You are currently looking at rounds 1 to 5."
+        if len(history) <= 5:
+            shown_rounds_text = f"You are currently viewing rounds 1 to {len(history)}"
+        else:
+            shown_rounds_text = "You are currently viewing rounds 1 to 5"
         self.shown_rounds = Label(self.stats_frame, text=shown_rounds_text, width=50)
         self.shown_rounds.grid(row=4, padx=5, pady=5)
+        
+        self.history_start = 0
+        self.history_end = 5
+
+        count = 1
 
         history_text = "\n"
+        for item in history[:self.history_end]:
 
-        # get string to show in history
-        for item in history:
-
-            result = f"Your answer: {item[0]}\tCorrect answer: {item[1]}\n"
+            result = f"Round {count} - Your answer: {item[0]}\t\tCorrect answer: {item[1]}\n"
             history_text += result
+            count += 1
         
         self.display_history = Label(self.stats_frame, text=history_text,
-                                     width=50, justify="left")
+                                     width=70, justify="left", wraplength=500)
         self.display_history.grid(row=5, padx=5, pady=5)
 
-        self.nav_frame = Frame(self.stats_frame, padx=5, pady=5)
+        self.nav_frame = Frame(self.stats_frame, padx=5, pady=5, bg="#a2d0fa")
         self.nav_frame.grid(row=6)
         
-        self.go_left = Button(self.nav_frame, text="<")
-        self.go_left.grid(row=0, column=0)
+        self.go_left = Button(self.nav_frame, text="<", state=DISABLED,
+                              command=lambda: self.move_history(history, "left"))
+        self.go_left.grid(row=0, column=0, padx=180)
 
-        self.go_right = Button(self.nav_frame, text=">")
-        self.go_right.grid(row=0, column=1)
+        self.go_right = Button(self.nav_frame, text=">", command=lambda: self.move_history(history, "right"))
+        self.go_right.grid(row=0, column=1, padx=180)
 
-        self.dismiss_help = Button(self.stats_frame, text="Dismiss",
-                                   width=15, bg="#e0af46", activebackground="#f0c362",
+        # disable right arrow if not enough rounds played
+        if len(history) <= 5:
+            self.go_right.config(state=DISABLED)
+
+        self.dismiss_stats = Button(self.stats_frame, text="Dismiss",
+                                   width=25, bg="#60a0db", activebackground="#3b76ad",
                                    command=lambda: self.close_stats(partner),
                                    font=("Microsoft PhagsPa", 10, "normal"))
-        self.dismiss_help.grid(row=7, padx=5, pady=10)
+        self.dismiss_stats.grid(row=7, padx=5, pady=10)
+
+    # function moves the viewed history further or back five rounds based on button pressed
+    def move_history(self, history, direction):
+        
+        shown_edited = True
+
+        if direction == "right":
+            
+            self.history_start += 5
+            self.history_end += 5
+
+            self.go_left.config(state=NORMAL)
+
+            if self.history_end >= len(history):
+                self.go_right.config(state=DISABLED)
+                
+        else:
+            
+            self.history_start -= 5
+            self.history_end -= 5
+            
+            self.go_right.config(state=NORMAL)
+
+            if self.history_start == 0:
+                self.go_left.config(state=DISABLED)
+
+        # update the label showing user the rounds they're viewing
+        count = self.history_start + 1
+        self.shown_rounds.config(text=f"You are currently viewing rounds {count} to {count + 4}")
+
+        # remake history text and replace currently showing history
+        history_text = "\n"
+        for item in history[self.history_start:self.history_end]:
+
+            result = f"Round {count} - Your answer: {item[0]}\t\tCorrect answer: {item[1]}\n"
+            history_text += result
+            count += 1
+
+        self.display_history.config(text=history_text)
 
     # function closes the stats window and enables stats button
     def close_stats(self, partner):
