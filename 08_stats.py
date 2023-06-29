@@ -1,11 +1,10 @@
 # import modules
 from tkinter import *
 from functools import partial
-import csv
 import random
+import csv
 
 
-# choose rounds function, user starts here and can choose their number of rounds
 class ChooseRounds:
 
     def __init__(self):
@@ -18,8 +17,8 @@ class ChooseRounds:
                                  font=("Microsoft PhagsPa", "16", "bold"))
         self.flags_title.grid(row=0, padx=5, pady=5)
 
-        round_instructions_text = "Welcome to the flags quiz! Please enter the number of rounds you would like to play, " \
-                                  "or click the button with the infinity symbol to play infinite rounds."
+        round_instructions_text = "Enter the number of rounds you would like to play, " \
+                                  "or click the button with the infinity symbol for infinite mode."
         self.round_instructions = Label(self.start_frame, text=round_instructions_text,
                                         wraplength=275, width=40, justify="left",
                                         font=("Microsoft PhagsPa", "10", "normal"))
@@ -44,8 +43,9 @@ class ChooseRounds:
                                      font=("Microsoft PhagsPa", 10, "normal"))
         self.confirm_button.grid(row=5, padx=5, pady=5)
 
-    # function checks if number of rounds is valid then
-    # sends user to play window if rounds are valid
+        # function checks if number of rounds is valid then
+        # sends user to play window if rounds are valid
+
     def check_rounds(self):
 
         num_rounds = self.rounds_entry.get()
@@ -99,10 +99,7 @@ class Play:
         # 'releases' help button
         self.play_box.protocol("WM_DELETE_WINDOW", partial(self.close_play))
 
-        gui_header = ("Microsoft PhagsPa", 16, "bold")
-        button_font = ("Microsoft PhagsPa", 12, "normal")
-        text_font = ("Microsoft PhagsPa", 10, "normal")
-
+        # set up gui
         self.play_frame = Frame(self.play_box)
         self.play_frame.grid(padx=10, pady=10)
 
@@ -118,19 +115,20 @@ class Play:
             heading_text = f"Round {self.current_round} out of {self.num_rounds}"
 
         self.rounds_heading = Label(self.play_frame, text=f"Flag Quiz - {heading_text}",
-                                    font=gui_header, justify="center")
+                                    font=("Microsoft PhagsPa", 16, "bold"))
         self.rounds_heading.grid(row=0, padx=5, pady=5)
 
         quiz_instructions = "Click the button with the name of the flag shown!"
         self.play_instructions = Label(self.play_frame, text=quiz_instructions,
-                                       wraplength=275, justify="left", font=text_font)
+                                       wraplength=275, justify="left")
         self.play_instructions.grid(row=1, padx=5, pady=5)
+
+        self.all_results = []
+        
+        all_flags = self.get_all_flags()
 
         self.rounds_frame = Frame(self.play_frame)
         self.rounds_frame.grid(row=2)
-
-        all_flags = self.get_all_flags()
-        self.duplicate_files = [""]
 
         chosen_flag_info = self.random_flag(all_flags)
 
@@ -142,6 +140,7 @@ class Play:
 
         chosen_directory = f"flag_images_resized/{chosen_flag_file}"
 
+        # takes image and displays it
         flag_image = PhotoImage(file=chosen_directory).subsample(5)
 
         self.image_display = Label(self.rounds_frame, image=flag_image)
@@ -153,7 +152,7 @@ class Play:
         next_rnd_height = img_height // 25
 
         self.next_round = Button(self.rounds_frame, text="Next Round",
-                                 width=14, height=next_rnd_height, font=button_font,
+                                 width=14, height=next_rnd_height,
                                  bg="#e1adff", command=lambda: self.new_round(all_flags),
                                  state=DISABLED)
         self.next_round.grid(row=0, column=1, padx=5)
@@ -161,19 +160,13 @@ class Play:
         self.choice_frame = Frame(self.play_frame, padx=10, pady=10)
         self.choice_frame.grid(row=3)
 
-        # randomise choice names for random button positions
         random.shuffle(chosen_flag_names)
-
-        for item in range(len(chosen_flag_names)):
-            if chosen_flag_names[item] == correct_flag_list[0]:
-                correct_button_index = item
 
         self.choice_button_list = []
 
         for item in range(4):
             choice_button = Button(self.choice_frame, text=chosen_flag_names[item],
-                                   height=3, width=14, font=button_font, bg="#b8daff",
-                                   wraplength=100,
+                                   height=2, width=14, bg="#b8daff", wraplength=100,
                                    command=lambda i=chosen_flag_names[item]: self.choice_compare(i, correct_flag_list))
 
             self.choice_button_list.append(choice_button)
@@ -182,11 +175,9 @@ class Play:
                                column=item % 2,
                                padx=5, pady=5)
 
-        self.correct_button = self.choice_button_list[correct_button_index]
-
         result_label_text = "Question result will appear here"
         self.result_label = Label(self.play_frame, text=result_label_text,
-                                  font=button_font, bg="#d4d4d4", width=30,
+                                  bg="#d4d4d4", width=30,
                                   highlightbackground="#c2c2c2",
                                   highlightthickness=2, wraplength=200)
         self.result_label.grid(row=4, padx=5, pady=5)
@@ -194,11 +185,11 @@ class Play:
         self.correct_rounds = 0
         self.incorrect_rounds = 0
 
-        result_stat_text = f"Correct: {self.correct_rounds} Incorrect: {self.incorrect_rounds}"
+        result_stat_text = f"Correct: {self.correct_rounds} \tIncorrect: {self.incorrect_rounds}"
         self.result_stat = Label(self.play_frame, text=result_stat_text,
-                                 font=button_font, bg="#fff8bf", width=30,
+                                 bg="#fff8bf", width=30,
                                  highlightbackground="#e0daa6",
-                                 highlightthickness=2, wraplength=200)
+                                 highlightthickness=2)
         self.result_stat.grid(row=5, padx=5, pady=5)
 
         # setup control frame and buttons
@@ -215,14 +206,15 @@ class Play:
 
         for item in range(3):
             self.control_button = Button(self.control_frame, text=control_button_details[item][0],
-                                         width=11, font=text_font,
-                                         bg=control_button_details[item][1],
+                                         width=11, bg=control_button_details[item][1],
                                          command=lambda i=item: self.to_do(control_button_details[i][2]))
             self.control_button.grid(row=0, column=item, padx=5, pady=5)
 
             control_buttons.append(self.control_button)
 
-        self.help_button = control_buttons[0]
+        self.stats_button = control_buttons[1]
+        self.stats_button.config(state=DISABLED)
+
         self.start_over = control_buttons[2]
 
     # function returns list of all flag data
@@ -243,19 +235,10 @@ class Play:
 
     # function returns a random flag from flag list
     def random_flag(self, flag_list):
-
         # get the flag that will be the correct flag this round
-        # and make sure the file will not be the same two rounds in a row
-        while True:
-            correct_flag_list = random.choice(flag_list)
+        correct_flag_list = random.choice(flag_list)
 
-            correct_flag_file = correct_flag_list[3]
-            if correct_flag_file in self.duplicate_files:
-                continue
-            else:
-                self.duplicate_files.pop(0)
-                self.duplicate_files.append(correct_flag_file)
-                break
+        correct_flag_file = correct_flag_list[3]
 
         chosen_flag_lists = []
         choice_flag_names = [correct_flag_list[0]]
@@ -278,36 +261,34 @@ class Play:
     # function compares user choice with correct answer and updates gui
     def choice_compare(self, choice_name, correct_list):
 
-        # enable next round button
+        # enable next round button and stats button
         self.next_round.config(state=NORMAL)
+        self.stats_button.config(state=NORMAL)
 
         # end game if the last game has been played (if infinite mode was not chosen)
         if self.current_round == self.num_rounds and self.num_rounds != "infinite":
+
             self.next_round.config(state=DISABLED)
             self.start_over.config(bg="#48bf15", text="Play Again", font=("Arial", 10, "bold"))
 
         # disable choice buttons
         for item in self.choice_button_list:
-            item.config(state=DISABLED, bg="#ed8979")
 
-        # set correct button to a green background
-        self.correct_button.config(bg="#84e37b")
+            item.config(state=DISABLED)
 
         correct_answer = correct_list[0]
 
-        # update result label, choice buttons and correct / incorrect rounds based on result
         if choice_name in correct_list:
             self.result_label.config(text=f"Correct! The answer was {correct_answer}.",
                                      bg="#84e37b", highlightbackground="#3cb031")
             self.correct_rounds += 1
-
 
         else:
             self.result_label.config(text=f"Incorrect! The answer was {correct_answer}.",
                                      bg="#ed8979", highlightbackground="#c9432e")
             self.incorrect_rounds += 1
 
-        self.result_stat.config(text=f"Correct: {self.correct_rounds} Incorrect: {self.incorrect_rounds}")
+        self.result_stat.config(text=f"Correct: {self.correct_rounds} \tIncorrect: {self.incorrect_rounds}")
 
         if self.correct_rounds > self.incorrect_rounds:
             self.result_stat.config(bg="#84e37b", highlightbackground="#3cb031")
@@ -318,12 +299,14 @@ class Play:
         else:
             self.result_stat.config(bg="#fff8bf", highlightbackground="#e0daa6")
 
-    # function updates gui when next round is requested
+        round_result = [choice_name, correct_answer]
+
+        self.all_results.append(round_result)
+
     def new_round(self, flag_list):
 
-        # update rounds heading (based on infinite mode) and question result text and styling
+        # update rounds heading and question result text and styling
         self.current_round += 1
-
         if self.num_rounds == "infinite":
             self.rounds_heading.config(text=f"Flag Quiz - Round {self.current_round}")
         else:
@@ -333,7 +316,7 @@ class Play:
 
         # re-enable choice buttons and disable next round button
         for item in self.choice_button_list:
-            item.config(state=NORMAL, bg="#b8daff")
+            item.config(state=NORMAL)
 
         self.next_round.config(state=DISABLED)
 
@@ -359,21 +342,14 @@ class Play:
 
         self.next_round.config(height=next_rnd_height)
 
-        # randomise positions of flag choices, then edit the choice buttons to new choices
         random.shuffle(chosen_flag_names)
-
-        for item in range(len(chosen_flag_names)):
-            if chosen_flag_names[item] == correct_flag_list[0]:
-                correct_button_index = item
 
         choice_config_count = 0
         for item in self.choice_button_list:
             item.config(text=chosen_flag_names[choice_config_count],
-                        command=lambda i=chosen_flag_names[choice_config_count]: self.choice_compare(i,                                                                                   correct_flag_list))
+                        command=lambda i=chosen_flag_names[choice_config_count]: self.choice_compare(i, correct_flag_list))
 
             choice_config_count += 1
-
-        self.correct_button = self.choice_button_list[correct_button_index]
 
     # function links buttons to designated function
     def to_do(self, request):
@@ -382,19 +358,10 @@ class Play:
             self.get_help()
 
         elif request == "get stats":
-            self.get_history()
+            self.get_stats()
 
         elif request == "start over":
             self.close_play()
-
-    # function to open help window
-    def get_help(self):
-        self.help_button.config(state=DISABLED)
-        Help(self)
-
-    # function to open history
-    def get_history(self):
-        print("You chose to see your history")
 
     # function closes play window and shows rounds entry window
     def close_play(self):
@@ -403,56 +370,98 @@ class Play:
         root.deiconify()
         self.play_box.destroy()
 
+    # function to open help window when developed
+    def get_help(self):
+        print("You chose to get help")
 
-# help window, where the user can see instructions
-class Help:
+    def get_stats(self):
+        correct_incorrect = [self.correct_rounds, self.incorrect_rounds]
+        self.stats_button.config(state=DISABLED)
+        Stats(self, correct_incorrect, self.all_results)
 
-    def __init__(self, partner):
 
-        self.help_box = Toplevel()
-        self.help_box.protocol("WM_DELETE_WINDOW", partial(self.close_help,
+class Stats:
+
+    def __init__(self, partner, result_ratio, history):
+
+        self.stats_box = Toplevel()
+        self.stats_box.protocol("WM_DELETE_WINDOW", partial(self.close_stats,
                                                            partner))
 
-        # create GUI
-        self.help_frame = Frame(self.help_box, padx=10, pady=10, bg="#ffe387")
-        self.help_frame.grid()
+        print(history)
 
-        self.help_title = Label(self.help_frame, text="Help",
+        # create GUI
+        self.stats_frame = Frame(self.stats_box, padx=10, pady=10, bg="#ffe387")
+        self.stats_frame.grid()
+
+        self.help_title = Label(self.stats_frame, text="Statistics / History",
                                 font=("Microsoft PhagsPa", "16", "bold"), bg="#ffe387")
         self.help_title.grid(row=0, padx=5, pady=5)
 
-        # instructions to be displayed in help
-        instructions_text = "Welcome to the help window! Currently you should have chosen the number of rounds, which you will play " \
-                            "that number of rounds.\n\nWhen you're playing the game you will be shown a flag that represents a country. " \
-                            "To win you must choose (by clicking) the button which has the name of the country that the flag represents. " \
-                            "After choosing which country you think the flag is from you will be able to play more rounds (if there are more rounds to be played)" \
-                            "by clicking the 'next round button', which will bring you to the next round." \
-                            "You will also be able to check your current game history by clicking on the 'Statistics' button at the bottom of the" \
-                            "play window\n\n" \
-                            "Want to play more after? Click the 'start over' (or 'play again button if you have completed your game') or the X at the top right of the window " \
-                            "to go back to choose the number of rounds you want to play, and start again from the beginning!"
+        instructions_text = "Welcome to the statistics window! Here you can see your correct rounds " \
+                            "and incorrect rounds with a percentage. You can also see your question history here, " \
+                            "using the arrow buttons to navigate through groups of five rounds."\
 
-        self.instructions = Label(self.help_frame, text=instructions_text,
-                                  wraplength=400, width=50, justify="left", bg="#ffe387",
-                                  font=("Microsoft PhagsPa", "12", "normal"))
+        self.instructions = Label(self.stats_frame, text=instructions_text,
+                                  wraplength=330, width=50, justify="left", bg="#ffe387",
+                                  font=("Microsoft PhagsPa", "10", "normal"))
         self.instructions.grid(row=1, padx=5, pady=5)
 
-        self.dismiss_help = Button(self.help_frame, text="Dismiss",
+        total_correct = result_ratio[0]
+        total_incorrect = result_ratio[1]
+
+        self.total_results = Label(self.stats_frame, text=f"Correct: {total_correct} \tIncorrect: {total_incorrect}",
+                                   width=50)
+        self.total_results.grid(row=2, padx=5, pady=5)
+
+        percentage_correct = round((total_correct / (total_correct + total_incorrect)) * 100, 1)
+        percentage_incorrect = round((total_incorrect / (total_correct + total_incorrect)) * 100, 1)
+
+        self.result_percentages = Label(self.stats_frame, text=f"Percentage Correct: {percentage_correct}% \tPercentage Incorrect: {percentage_incorrect}%",
+                                        width=50)
+        self.result_percentages.grid(row=3, padx=5, pady=5)
+
+        shown_rounds_text = "You are currently looking at rounds 1 to 5."
+        self.shown_rounds = Label(self.stats_frame, text=shown_rounds_text, width=50)
+        self.shown_rounds.grid(row=4, padx=5, pady=5)
+
+        history_text = "\n"
+
+        # get string to show in history
+        for item in history:
+
+            result = f"Your answer: {item[0]}\tCorrect answer: {item[1]}\n"
+            history_text += result
+        
+        self.display_history = Label(self.stats_frame, text=history_text,
+                                     width=50, justify="left")
+        self.display_history.grid(row=5, padx=5, pady=5)
+
+        self.nav_frame = Frame(self.stats_frame, padx=5, pady=5)
+        self.nav_frame.grid(row=6)
+        
+        self.go_left = Button(self.nav_frame, text="<")
+        self.go_left.grid(row=0, column=0)
+
+        self.go_right = Button(self.nav_frame, text=">")
+        self.go_right.grid(row=0, column=1)
+
+        self.dismiss_help = Button(self.stats_frame, text="Dismiss",
                                    width=15, bg="#e0af46", activebackground="#f0c362",
-                                   command=lambda: self.close_help(partner),
-                                   font=("Microsoft PhagsPa", "10", "normal"))
-        self.dismiss_help.grid(row=2, padx=5, pady=10)
+                                   command=lambda: self.close_stats(partner),
+                                   font=("Microsoft PhagsPa", 10, "normal"))
+        self.dismiss_help.grid(row=7, padx=5, pady=10)
 
-    # function closes the help window and enables help button
-    def close_help(self, partner):
+    # function closes the stats window and enables stats button
+    def close_stats(self, partner):
 
-        partner.help_button.config(state=NORMAL)
-        self.help_box.destroy()
+        partner.stats_button.config(state=NORMAL)
+        self.stats_box.destroy()
 
 
 # main routine
 if __name__ == "__main__":
     root = Tk()
     root.title("Flags Quiz")
-    choose_rounds = ChooseRounds()
+    ChooseRounds()
     root.mainloop()
