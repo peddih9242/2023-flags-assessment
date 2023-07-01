@@ -437,23 +437,31 @@ class Stats:
         self.display_rounds = Label(self.stats_frame, text=display_rounds_text, width=70)
         self.display_rounds.grid(row=4, padx=5, pady=5)
 
-        self.history_start = 0
-        self.history_end = 5
+        # loop creates up to 5 separate labels showing individual rounds
+        self.history_display_list = []
 
-        count = 1
+        if len(history) < 5:
+            num_display = len(history)
+        else:
+            num_display = 5
 
-        history_text = "\n"
-        for item in history[:self.history_end]:
-            result = f"Round {count} - Your answer: {item[0]}\t\tCorrect answer: {item[1]}\n"
-            history_text += result
-            count += 1
+        for item in range(num_display):
 
-        self.display_history = Label(self.stats_frame, text=history_text,
-                                     width=70, justify="left", wraplength=500)
-        self.display_history.grid(row=5, padx=5, pady=5)
+            # set background for each round shown based on if user is correct or not
+            if history[item][0] == history[item][1]:
+                display_bg = "#84e37b"
+            else:
+                display_bg = "#ed8979"
+            
+            self.display_history = Label(self.stats_frame, text=f"Round {item + 1} - Your answer: {history[item][0]}\t\tCorrect answer: {history[item][1]}",
+                                         width=70, justify="left", wraplength=500, bg=display_bg)
+            
+            self.history_display_list.append(self.display_history)
+
+            self.display_history.grid(row=5+item, padx=5)
 
         self.nav_frame = Frame(self.stats_frame, padx=5, pady=5, bg="#a2d0fa")
-        self.nav_frame.grid(row=6)
+        self.nav_frame.grid(row=10)
 
         self.go_left = Button(self.nav_frame, text="<", state=DISABLED,
                               command=lambda: self.move_history(history, "left"))
@@ -470,29 +478,57 @@ class Stats:
                                     width=25, bg="#60a0db", activebackground="#3b76ad",
                                     command=lambda: self.close_stats(partner),
                                     font=("Microsoft PhagsPa", 10, "normal"))
-        self.dismiss_stats.grid(row=7, padx=5, pady=10)
+        self.dismiss_stats.grid(row=11, padx=5, pady=10)
 
     # function moves the viewed history further or back five rounds based on button pressed
     def move_history(self, history, direction):
 
+        self.history_start = 5
+        self.history_end = 10
+
         if direction == "right":
+
+            self.history_start
+            disable_right = False
+
+            # update labels displaying the history to show next 5 rounds
+            count = 5
+            for item in self.history_display_list:
+                
+                if count <= len(history):
+
+                    # set background for each round shown based on if user is correct or not
+                    if history[count][0] == history[count][1]:
+                        display_bg = "#84e37b"
+                    else:
+                        display_bg = "#ed8979"
+
+                    item.config(text=f"Round {count + 1} - Your answer: {history[count][0]}\t\tCorrect answer: {history[count][1]}", bg=display_bg)
+                
+                else:
+                    item.config(text="", bg="#d4d4d4")
+                    disable_right = True
+                count += 1
+                    
 
             self.history_start += 5
             self.history_end += 5
 
             self.go_left.config(state=NORMAL)
 
-            if self.history_end >= len(history):
+            if disable_right:
                 self.go_right.config(state=DISABLED)
 
         else:
+
+            disable_left = False
 
             self.history_start -= 5
             self.history_end -= 5
 
             self.go_right.config(state=NORMAL)
 
-            if self.history_start == 0:
+            if disable_left:
                 self.go_left.config(state=DISABLED)
 
         # update the label showing user the rounds they're viewing
