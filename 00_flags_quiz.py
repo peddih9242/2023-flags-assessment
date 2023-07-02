@@ -126,6 +126,8 @@ class Play:
                                        wraplength=275, justify="left", font=text_font)
         self.play_instructions.grid(row=1, padx=5, pady=5)
 
+        self.all_results = []
+
         self.rounds_frame = Frame(self.play_frame)
         self.rounds_frame.grid(row=2)
 
@@ -194,7 +196,7 @@ class Play:
         self.correct_rounds = 0
         self.incorrect_rounds = 0
 
-        result_stat_text = f"Correct: {self.correct_rounds} Incorrect: {self.incorrect_rounds}"
+        result_stat_text = f"Correct: {self.correct_rounds} - Incorrect: {self.incorrect_rounds}"
         self.result_stat = Label(self.play_frame, text=result_stat_text,
                                  font=button_font, bg="#fff8bf", width=30,
                                  highlightbackground="#e0daa6",
@@ -223,6 +225,7 @@ class Play:
             control_buttons.append(self.control_button)
 
         self.help_button = control_buttons[0]
+        self.stats_button = control_buttons[1]
         self.start_over = control_buttons[2]
 
     # function returns list of all flag data
@@ -307,7 +310,7 @@ class Play:
                                      bg="#ed8979", highlightbackground="#c9432e")
             self.incorrect_rounds += 1
 
-        self.result_stat.config(text=f"Correct: {self.correct_rounds} Incorrect: {self.incorrect_rounds}")
+        self.result_stat.config(text=f"Correct: {self.correct_rounds} - Incorrect: {self.incorrect_rounds}")
 
         if self.correct_rounds > self.incorrect_rounds:
             self.result_stat.config(bg="#84e37b", highlightbackground="#3cb031")
@@ -317,6 +320,10 @@ class Play:
 
         else:
             self.result_stat.config(bg="#fff8bf", highlightbackground="#e0daa6")
+
+        round_result = [choice_name, correct_answer]
+
+        self.all_results.append(round_result)
 
     # function updates gui when next round is requested
     def new_round(self, flag_list):
@@ -394,7 +401,9 @@ class Play:
 
     # function to open history
     def get_history(self):
-        print("You chose to see your history")
+        correct_incorrect = [self.correct_rounds, self.incorrect_rounds]
+        self.stats_button.config(state=DISABLED)
+        Stats(self, correct_incorrect, self.all_results)
 
     # function closes play window and shows rounds entry window
     def close_play(self):
@@ -448,6 +457,192 @@ class Help:
 
         partner.help_button.config(state=NORMAL)
         self.help_box.destroy()
+
+class Stats:
+
+    def __init__(self, partner, result_ratio, history):
+
+        self.stats_box = Toplevel()
+        self.stats_box.protocol("WM_DELETE_WINDOW", partial(self.close_stats,
+                                                            partner))
+
+        # create GUI
+
+        self.stats_bg = "#a2d0fa"
+        stats_font = ("Microsoft PhagsPa", "10", "normal")
+
+        self.stats_frame = Frame(self.stats_box, padx=10, pady=10, bg=self.stats_bg)
+        self.stats_frame.grid()
+
+        self.stats_title = Label(self.stats_frame, text="Statistics / History",
+                                 font=("Microsoft PhagsPa", "16", "bold"), bg=self.stats_bg)
+        self.stats_title.grid(row=0, padx=5, pady=5)
+
+        stats_instructions_text = "Welcome to the statistics window! Here you can see your correct rounds " \
+                                  "and incorrect rounds with a percentage. You can also see your question history here, " \
+                                  "using the arrow buttons to navigate through groups of five rounds."
+        self.stats_instructions = Label(self.stats_frame, text=stats_instructions_text,
+                                        wraplength=450, width=70, justify="left", bg=self.stats_bg,
+                                        font=stats_font)
+        self.stats_instructions.grid(row=1, padx=5, pady=5)
+
+        total_correct = result_ratio[0]
+        total_incorrect = result_ratio[1]
+
+        # change colour of background of labels showing results
+        if total_correct > total_incorrect:
+            result_bg = "#84e37b"
+        elif total_incorrect > total_correct:
+            result_bg = "#ed8979"
+        else:
+            result_bg = "#fff8bf"
+
+        self.total_results = Label(self.stats_frame, text=f"Correct: {total_correct} \t\tIncorrect: {total_incorrect}",
+                                   width=70, bg=result_bg, font=stats_font)
+        self.total_results.grid(row=2, padx=5, pady=5)
+
+        # calculate percentages of correct and incorrect rounds and display them
+        percentage_correct = round((total_correct / (total_correct + total_incorrect)) * 100, 1)
+        percentage_incorrect = round(100 - percentage_correct, 1)
+
+        self.result_percentages = Label(self.stats_frame,
+                                        text=f"Percentage Correct: {percentage_correct}% \t\tPercentage Incorrect: {percentage_incorrect}%",
+                                        width=70, bg=result_bg, font=stats_font)
+        self.result_percentages.grid(row=3, padx=5, pady=5)
+        
+        self.history_start = 1
+        self.history_end = 5
+        
+        if len(history) <= 5:
+            shown_rounds_text = f"You are currently viewing rounds 1 to {len(history)}"
+        else:
+            shown_rounds_text = "You are currently viewing rounds 1 to 5"
+        self.shown_rounds = Label(self.stats_frame, text=shown_rounds_text,
+                                  width=70, font=stats_font)
+        self.shown_rounds.grid(row=4, padx=5, pady=5)
+
+        # loop creates up to 5 separate labels showing individual rounds
+        self.history_display_list = []
+
+        if len(history) < 5:
+            num_display = len(history)
+        else:
+            num_display = 5
+
+        for item in range(num_display):
+
+            # set background for each round shown based on if user is correct or not
+            if history[item][0] == history[item][1]:
+                display_bg = "#84e37b"
+            else:
+                display_bg = "#ed8979"
+            
+            self.display_history = Label(self.stats_frame, text=f"Round {item + 1} - Your answer: {history[item][0]}\t\tCorrect answer: {history[item][1]}",
+                                         width=70, justify="left", wraplength=500, bg=display_bg, font=stats_font)
+            
+            self.history_display_list.append(self.display_history)
+
+            self.display_history.grid(row=5+item, padx=5)
+
+        self.nav_frame = Frame(self.stats_frame, padx=5, pady=5, bg="#a2d0fa")
+        self.nav_frame.grid(row=10)
+
+        self.go_left = Button(self.nav_frame, text="<", state=DISABLED,
+                              command=lambda: self.move_history(history, "left"))
+        self.go_left.grid(row=0, column=0, padx=180)
+
+        self.go_right = Button(self.nav_frame, text=">", command=lambda: self.move_history(history, "right"))
+        self.go_right.grid(row=0, column=1, padx=180)
+
+        # disable right arrow if not enough rounds played
+        if len(history) <= 5:
+            self.go_right.config(state=DISABLED)
+
+        self.dismiss_stats = Button(self.stats_frame, text="Dismiss",
+                                    width=25, bg="#60a0db", activebackground="#3b76ad",
+                                    command=lambda: self.close_stats(partner),
+                                    font=stats_font)
+        self.dismiss_stats.grid(row=11, padx=5, pady=10)
+
+    # function moves the viewed history further or back five rounds based on button pressed
+    def move_history(self, history, direction):
+
+        if direction == "right":
+
+            self.history_start += 5
+            self.history_end += 5
+
+            disable_right = False
+
+            # update labels displaying the history to show next 5 rounds
+            count = self.history_start - 1
+            for item in self.history_display_list:
+                
+                if count < len(history):
+
+                    # set background for each round shown based on if user is correct or not
+                    if history[count][0] == history[count][1]:
+                        display_bg = "#84e37b"
+                    else:
+                        display_bg = "#ed8979"
+
+                    item.config(text=f"Round {count + 1} - Your answer: {history[count][0]}\t\tCorrect answer: {history[count][1]}", bg=display_bg)
+
+                else:
+                    item.config(text="", bg=self.stats_bg)
+                    disable_right = True
+
+                count += 1
+
+                if count == len(history):
+                    disable_right = True
+
+            self.go_left.config(state=NORMAL)
+
+            if disable_right:
+                self.go_right.config(state=DISABLED)
+
+        else:
+
+            self.history_start -= 5
+            self.history_end -= 5
+
+            disable_left = False
+
+            # update labels displaying the history to show next 5 rounds
+            count = self.history_start - 1
+            for item in self.history_display_list:
+                
+                # set background for each round shown based on if user is correct or not
+                if history[count][0] == history[count][1]:
+                    display_bg = "#84e37b"
+                else:
+                    display_bg = "#ed8979"
+
+                item.config(text=f"Round {count + 1} - Your answer: {history[count][0]}\t\tCorrect answer: {history[count][1]}", bg=display_bg)
+
+                if self.history_start == 1:
+                    disable_left = True
+
+                count += 1
+
+            self.go_right.config(state=NORMAL)
+
+            if disable_left:
+                self.go_left.config(state=DISABLED)
+
+        # update the label showing user the rounds they're viewing
+        if count > len(history):
+            self.shown_rounds.config(text=f"You are currently viewing rounds {self.history_start} to {len(history)}")
+        else:
+            self.shown_rounds.config(text=f"You are currently viewing rounds {self.history_start} to {self.history_end}")
+
+
+    # function closes the stats window and enables stats button
+    def close_stats(self, partner):
+
+        partner.stats_button.config(state=NORMAL)
+        self.stats_box.destroy()
 
 
 # main routine
