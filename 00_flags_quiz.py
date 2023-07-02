@@ -228,6 +228,8 @@ class Play:
         self.stats_button = control_buttons[1]
         self.start_over = control_buttons[2]
 
+        self.stats_button.config(state=DISABLED)
+
     # function returns list of all flag data
     def get_all_flags(self):
         # open csv file and create reader
@@ -280,6 +282,9 @@ class Play:
 
     # function compares user choice with correct answer and updates gui
     def choice_compare(self, choice_name, correct_list):
+
+        # allow statistics to be opened
+        self.stats_button.config(state=NORMAL)
 
         # enable next round button
         self.next_round.config(state=NORMAL)
