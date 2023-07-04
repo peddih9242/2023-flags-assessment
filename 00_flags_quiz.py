@@ -95,13 +95,13 @@ class Play:
         # set up play gui and font for gui
         self.play_box = Toplevel()
 
-        # if users press cross at top, closes help and
-        # 'releases' help button
-        self.play_box.protocol("WM_DELETE_WINDOW", partial(self.close_play))
-
         gui_header = ("Microsoft PhagsPa", 16, "bold")
         button_font = ("Microsoft PhagsPa", 12, "normal")
         text_font = ("Microsoft PhagsPa", 10, "normal")
+
+        # if users press cross at top, closes help and
+        # 'releases' help button
+        self.play_box.protocol("WM_DELETE_WINDOW", partial(self.close_play))
 
         self.play_frame = Frame(self.play_box)
         self.play_frame.grid(padx=10, pady=10)
@@ -131,6 +131,7 @@ class Play:
         self.rounds_frame = Frame(self.play_frame)
         self.rounds_frame.grid(row=2)
 
+        # start getting a random flag
         all_flags = self.get_all_flags()
         self.duplicate_files = [""]
 
@@ -166,10 +167,12 @@ class Play:
         # randomise choice names for random button positions
         random.shuffle(chosen_flag_names)
 
+        # get correct button index (to make green after round end)
         for item in range(len(chosen_flag_names)):
             if chosen_flag_names[item] == correct_flag_list[0]:
                 correct_button_index = item
 
+        # list to hold different country choices
         self.choice_button_list = []
 
         for item in range(4):
@@ -184,6 +187,7 @@ class Play:
                                column=item % 2,
                                padx=5, pady=5)
 
+        # get correct button from index and country choices
         self.correct_button = self.choice_button_list[correct_button_index]
 
         result_label_text = "Question result will appear here"
@@ -213,6 +217,7 @@ class Play:
             ["Start Over", "#d4d4d4", "start over"]
         ]
 
+        # list to hold control buttons
         control_buttons = []
 
         for item in range(3):
@@ -224,6 +229,7 @@ class Play:
 
             control_buttons.append(self.control_button)
 
+        # variables for each button to disable after being pressed
         self.help_button = control_buttons[0]
         self.stats_button = control_buttons[1]
         self.start_over = control_buttons[2]
@@ -246,12 +252,12 @@ class Play:
 
         return flag_data
 
-    # function returns a random flag from flag list
+    # function returns a random flag file and four flag names (one representing the flag file)
+    # while not having a duplicate file for two rounds in a row
     def random_flag(self, flag_list):
 
-        # get the flag that will be the correct flag this round
-        # and make sure the file will not be the same two rounds in a row
         while True:
+            # choose random flag to be correct flag and make sure it's not a duplicate
             correct_flag_list = random.choice(flag_list)
 
             correct_flag_file = correct_flag_list[3]
@@ -262,6 +268,8 @@ class Play:
                 self.duplicate_files.append(correct_flag_file)
                 break
 
+
+        # get names of other 3 countries without duplicates
         chosen_flag_lists = []
         choice_flag_names = [correct_flag_list[0]]
 
@@ -309,7 +317,6 @@ class Play:
                                      bg="#84e37b", highlightbackground="#3cb031")
             self.correct_rounds += 1
 
-
         else:
             self.result_label.config(text=f"Incorrect! The answer was {correct_answer}.",
                                      bg="#ed8979", highlightbackground="#c9432e")
@@ -317,6 +324,7 @@ class Play:
 
         self.result_stat.config(text=f"Correct: {self.correct_rounds} - Incorrect: {self.incorrect_rounds}")
 
+        # update statistics label based on correct vs incorrect ratio
         if self.correct_rounds > self.incorrect_rounds:
             self.result_stat.config(bg="#84e37b", highlightbackground="#3cb031")
 
@@ -326,6 +334,7 @@ class Play:
         else:
             self.result_stat.config(bg="#fff8bf", highlightbackground="#e0daa6")
 
+        # round result to be used in statistics
         round_result = [choice_name, correct_answer]
 
         self.all_results.append(round_result)
@@ -349,6 +358,7 @@ class Play:
 
         self.next_round.config(state=DISABLED)
 
+        # update displayed flag, and four choices
         chosen_flag_info = self.random_flag(flag_list)
 
         chosen_flag_names = chosen_flag_info[0]
@@ -374,10 +384,12 @@ class Play:
         # randomise positions of flag choices, then edit the choice buttons to new choices
         random.shuffle(chosen_flag_names)
 
+        # get correct button index (to make green after round end)
         for item in range(len(chosen_flag_names)):
             if chosen_flag_names[item] == correct_flag_list[0]:
                 correct_button_index = item
 
+        # update choice buttons
         choice_config_count = 0
         for item in self.choice_button_list:
             item.config(text=chosen_flag_names[choice_config_count],
@@ -385,9 +397,10 @@ class Play:
 
             choice_config_count += 1
 
+        # get correct button from index and country choices
         self.correct_button = self.choice_button_list[correct_button_index]
 
-    # function links buttons to designated function
+    # function links control buttons to designated function
     def to_do(self, request):
 
         if request == "get help":
@@ -462,17 +475,17 @@ class Help:
 
         partner.help_button.config(state=NORMAL)
         self.help_box.destroy()
-
+# statistics window, where game statistics and history are displayed
 class Stats:
 
     def __init__(self, partner, result_ratio, history):
 
+        # create GUI
         self.stats_box = Toplevel()
         self.stats_box.protocol("WM_DELETE_WINDOW", partial(self.close_stats,
                                                             partner))
 
-        # create GUI
-
+        # set up statistics background and text font (not heading)
         self.stats_bg = "#a2d0fa"
         stats_font = ("Microsoft PhagsPa", "10", "normal")
 
@@ -491,10 +504,10 @@ class Stats:
                                         font=stats_font)
         self.stats_instructions.grid(row=1, padx=5, pady=5)
 
+        # change colour of background of labels showing results based on correct / incorrect ratio
         total_correct = result_ratio[0]
         total_incorrect = result_ratio[1]
-
-        # change colour of background of labels showing results
+        
         if total_correct > total_incorrect:
             result_bg = "#84e37b"
         elif total_incorrect > total_correct:
@@ -519,6 +532,7 @@ class Stats:
                                       width=70, font=stats_font)
         self.available_rounds.grid(row=4, padx=5, pady=5)
         
+        # variables to be used in displaying history
         self.history_start = 1
         self.history_end = 5
         
@@ -530,14 +544,16 @@ class Stats:
                                   width=70, font=stats_font)
         self.shown_rounds.grid(row=5, padx=5, pady=5)
 
-        # loop creates up to 5 separate labels showing individual rounds
+        # list to hold individual labels
         self.history_display_list = []
 
+        # condition makes sure not too many labels are created for smaller games
         if len(history) < 5:
             num_display = len(history)
         else:
             num_display = 5
 
+        # loop creates up to 5 separate labels showing individual rounds
         for item in range(num_display):
 
             # set background for each round shown based on if user is correct or not
@@ -553,6 +569,7 @@ class Stats:
 
             self.display_history.grid(row=6+item, padx=5)
 
+        # frame to contain left and right navigation buttons
         self.nav_frame = Frame(self.stats_frame, padx=5, pady=5, bg="#a2d0fa")
         self.nav_frame.grid(row=11)
 
@@ -587,6 +604,7 @@ class Stats:
             count = self.history_start - 1
             for item in self.history_display_list:
                 
+                # condition makes sure excess labels go blank
                 if count < len(history):
 
                     # set background for each round shown based on if user is correct or not
@@ -606,6 +624,7 @@ class Stats:
                 if count == len(history):
                     disable_right = True
 
+            # enabling and disabling of buttons makes sure buttons are pressed only when they should be
             self.go_left.config(state=NORMAL)
 
             if disable_right:
