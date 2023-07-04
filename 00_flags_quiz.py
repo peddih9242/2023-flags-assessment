@@ -514,6 +514,10 @@ class Stats:
                                         text=f"Percentage Correct: {percentage_correct}% \t\tPercentage Incorrect: {percentage_incorrect}%",
                                         width=70, bg=result_bg, font=stats_font)
         self.result_percentages.grid(row=3, padx=5, pady=5)
+
+        self.available_rounds = Label(self.stats_frame, text=f"Rounds 1 - {len(history)} are available to be shown",
+                                      width=70, font=stats_font)
+        self.available_rounds.grid(row=4, padx=5, pady=5)
         
         self.history_start = 1
         self.history_end = 5
@@ -524,7 +528,7 @@ class Stats:
             shown_rounds_text = "You are currently viewing rounds 1 to 5"
         self.shown_rounds = Label(self.stats_frame, text=shown_rounds_text,
                                   width=70, font=stats_font)
-        self.shown_rounds.grid(row=4, padx=5, pady=5)
+        self.shown_rounds.grid(row=5, padx=5, pady=5)
 
         # loop creates up to 5 separate labels showing individual rounds
         self.history_display_list = []
@@ -547,10 +551,10 @@ class Stats:
             
             self.history_display_list.append(self.display_history)
 
-            self.display_history.grid(row=5+item, padx=5)
+            self.display_history.grid(row=6+item, padx=5)
 
         self.nav_frame = Frame(self.stats_frame, padx=5, pady=5, bg="#a2d0fa")
-        self.nav_frame.grid(row=10)
+        self.nav_frame.grid(row=11)
 
         self.go_left = Button(self.nav_frame, text="<", state=DISABLED,
                               command=lambda: self.move_history(history, "left"))
@@ -567,7 +571,7 @@ class Stats:
                                     width=25, bg="#60a0db", activebackground="#3b76ad",
                                     command=lambda: self.close_stats(partner),
                                     font=stats_font)
-        self.dismiss_stats.grid(row=11, padx=5, pady=10)
+        self.dismiss_stats.grid(row=12, padx=5, pady=10)
 
     # function moves the viewed history further or back five rounds based on button pressed
     def move_history(self, history, direction):
